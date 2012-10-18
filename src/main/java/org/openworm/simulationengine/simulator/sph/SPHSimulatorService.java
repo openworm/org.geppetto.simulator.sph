@@ -13,14 +13,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SPHSimulator extends AParallelSimulator {
+public class SPHSimulatorService extends AParallelSimulator {
 
-	private static Log logger = LogFactory.getLog(SPHSimulator.class);
+	private static Log logger = LogFactory.getLog(SPHSimulatorService.class);
 	
 	private ITimeConfiguration _timeConfiguration;
 	
 	@Autowired
-	@Qualifier("sphSolver")
+	@Qualifier("SPHSolverService")
 	private ISolver sphSolver;
 	
 	@Override

@@ -2,42 +2,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openworm.simulationengine.simulator.sph</groupId>
-	<artifactId>org.openworm.simulationengine.simulator.sph</artifactId>
-	<name>SPH Simulator</name>
-	<packaging>jar</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<groupId>org.openworm</groupId>
+	<artifactId>simulationengine.simulator.sph</artifactId>
+	<name>OpenWorm Simulation Engine SPH Simulator Bundle</name>
+	<packaging>bundle</packaging>
+	<version>1.0.0</version>
 	<properties>
-		<spring.version>2.5.6.A</spring.version>
-	</properties>	
+		<spring.version>3.0.0.RELEASE</spring.version>
+	</properties>
 	<dependencies>
 		<!-- compile and runtime dependencies -->
 		<dependency>
-	<groupId>org.springframework</groupId>
-	<artifactId>spring-test</artifactId>
-	<version>3.1.1.RELEASE</version>
-</dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>3.1.1.RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>com.springsource.javax.transaction</artifactId>
 			<version>1.1.0</version>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.aopalliance</groupId>
-			<artifactId>com.springsource.org.aopalliance</artifactId>
-			<version>1.0.0</version>
-			<scope>runtime</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
 			<version>1.1.1</version>
-		</dependency>	
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>com.springsource.org.hibernate</artifactId>
-			<version>3.2.6.ga</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -51,48 +41,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.aop</artifactId>
-			<version>${spring.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.context</artifactId>
 			<version>${spring.version}</version>
-		</dependency>	
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.jdbc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.orm</artifactId>
-			<version>${spring.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.transaction</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<!-- test dependencies -->			
+		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 			<version>1.2.15</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>com.springsource.org.easymock</artifactId>
-			<version>2.3.0</version>
-			<scope>test</scope>
-		</dependency>		
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>com.springsource.org.hsqldb</artifactId>
-			<version>1.8.0.9</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -115,15 +76,15 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.openworm.simulationengine.core</groupId>
-			<artifactId>org.openworm.simulationengine.core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<groupId>org.openworm</groupId>
+			<artifactId>simulationengine.core</artifactId>
+			<version>1.0.0</version>
 		</dependency>
-				<dependency>
-	<groupId>junit</groupId>
-	<artifactId>junit</artifactId>
-	<version>4.10</version>
-</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -145,7 +106,7 @@
 			<id>com.springsource.repository.libraries.external</id>
 			<name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
 			<url>http://repository.springsource.com/maven/libraries/external</url>
-		</repository> 		
+		</repository>
 	</repositories>
 	<build>
 		<plugins>
@@ -153,17 +114,25 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
 				<configuration>
-					<archive>
-						<manifestFile>src/main/java/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
+					<manifestLocation>src/main/java/META-INF</manifestLocation>
+					<supportedProjectTypes>
+						<supportedProjectType>jar</supportedProjectType>
+						<supportedProjectType>bundle</supportedProjectType>
+					</supportedProjectTypes>
+					<instructions>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+					</instructions>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -180,5 +149,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-	</build>		
+	</build>
 </project>
