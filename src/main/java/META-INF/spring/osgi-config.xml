@@ -8,10 +8,6 @@
 							http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd">
 
 	<!-- Exports the service implementation to other bundles by its service interface -->
-	<osgi:service ref="SPHSimulatorService" interface="org.openworm.simulationengine.core.simulator.ISimulator" >
-<!-- 		<osgi:service-properties>
-    		<entry key="discoverable-id" value="sphSimulator"/>
-  		</osgi:service-properties> -->
-	</osgi:service>
-	<osgi:reference id="SPHSolverService" interface="org.openworm.simulationengine.core.solver.ISolver"/>
+	<osgi:service id="SPHSimulatorExporter" ref="SPHSimulatorService" interface="org.openworm.simulationengine.core.simulator.ISimulator" />
+	<osgi:reference bean-name="SPHSolverService" id="SPHSolver" interface="org.openworm.simulationengine.core.solver.ISolver"/>
 </beans>

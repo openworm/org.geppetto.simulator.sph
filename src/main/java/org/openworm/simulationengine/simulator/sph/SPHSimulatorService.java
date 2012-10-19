@@ -20,7 +20,6 @@ public class SPHSimulatorService extends AParallelSimulator {
 	private ITimeConfiguration _timeConfiguration;
 	
 	@Autowired
-	@Qualifier("SPHSolverService")
 	private ISolver sphSolver;
 	
 	@Override
