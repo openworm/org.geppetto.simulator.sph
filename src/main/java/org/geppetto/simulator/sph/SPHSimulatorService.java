@@ -1,13 +1,13 @@
-package org.openworm.simulationengine.simulator.sph;
+package org.geppetto.simulator.sph;
 
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openworm.simulationengine.core.model.IModel;
-import org.openworm.simulationengine.core.simulation.ITimeConfiguration;
-import org.openworm.simulationengine.core.simulator.AParallelSimulator;
-import org.openworm.simulationengine.core.solver.ISolver;
+import org.geppetto.core.model.IModel;
+import org.geppetto.core.simulation.ITimeConfiguration;
+import org.geppetto.core.simulator.AParallelSimulator;
+import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
