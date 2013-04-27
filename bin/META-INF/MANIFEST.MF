@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 Bundle-Version: 1.0.0
 Bundle-Name: SPH Simulator
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.openworm.simulationengine.simulator.sph
+Bundle-SymbolicName: org.geppetto.simulator.sph
 
