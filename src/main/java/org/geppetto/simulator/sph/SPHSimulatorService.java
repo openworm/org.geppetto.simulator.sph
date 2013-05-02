@@ -1,47 +1,41 @@
 package org.geppetto.simulator.sph;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geppetto.core.common.GeppettoExecutionException;
+import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.simulation.ITimeConfiguration;
-import org.geppetto.core.simulator.AParallelSimulator;
+import org.geppetto.core.model.StateSet;
+import org.geppetto.core.simulation.IRunConfiguration;
+import org.geppetto.core.simulation.ISimulatorCallbackListener;
+import org.geppetto.core.simulator.ASimulator;
 import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SPHSimulatorService extends AParallelSimulator {
+public class SPHSimulatorService extends ASimulator {
 
 	private static Log logger = LogFactory.getLog(SPHSimulatorService.class);
 	
-	private ITimeConfiguration _timeConfiguration;
-	
 	@Autowired
 	private ISolver sphSolver;
-	
+
+
 	@Override
-	public void startSimulatorCycle() {
-		logger.debug("SPH Simulator cycle started");
-		clearQueue();		
+	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
+	{
+		logger.info("SPH Simulate method invoked");
+		StateSet results=sphSolver.solve(runConfiguration);
+		getListener().stateSetReady(results);
 	}
 
 	@Override
-	public void simulate(IModel model, ITimeConfiguration timeConfiguration) {
-		enqueue(model, sphSolver);
-		_timeConfiguration=timeConfiguration;
-		
+	public void initialize(IModel model, ISimulatorCallbackListener listener) throws GeppettoInitializationException
+	{
+		super.initialize(model, listener);
+		sphSolver.initialize(model);
 	}
 
-	@Override
-	public void endSimulatorCycle() {
-		logger.debug("cycle finished");
-		List<List<IModel>> results=sphSolver.solve(getQueue(sphSolver), _timeConfiguration);
-		for(List<IModel> models:results)
-		{
-			getListener().resultReady(models);
-		}
-	}
 
 }
