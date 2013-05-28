@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.StateSet;
+import org.geppetto.core.model.state.StateTreeRoot;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -26,8 +26,8 @@ public class SPHSimulatorService extends ASimulator {
 	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
 	{
 		logger.info("SPH Simulate method invoked");
-		StateSet results=sphSolver.solve(runConfiguration);
-		getListener().stateSetReady(results);
+		StateTreeRoot results=sphSolver.solve(runConfiguration);
+		getListener().stateTreeUpdated(results);
 	}
 
 	@Override
