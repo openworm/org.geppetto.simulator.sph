@@ -33,10 +33,13 @@
 
 package org.geppetto.simulator.sph;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.common.Variable;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.state.StateTreeRoot;
 import org.geppetto.core.simulation.IRunConfiguration;
@@ -71,5 +74,16 @@ public class SPHSimulatorService extends ASimulator {
 		getListener().stateTreeUpdated(stateTree);
 	}
 
+	@Override
+	public List<Variable> getForceableVariables() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Variable> getWatcheableVariables() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
