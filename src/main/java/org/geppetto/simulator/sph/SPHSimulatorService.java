@@ -73,17 +73,16 @@ public class SPHSimulatorService extends ASimulator {
 		StateTreeRoot stateTree = sphSolver.initialize(model);	
 		getListener().stateTreeUpdated(stateTree);
 	}
-
+	
 	@Override
 	public List<Variable> getForceableVariables() {
-		// TODO Auto-generated method stub
-		return null;
+		// the simulator could do some filtering here to expose a sub-set of the available variables
+		return sphSolver.getForceableVariables();
 	}
 
 	@Override
-	public List<Variable> getWatcheableVariables() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Variable> getWatchableVariables() {
+		// the simulator could do some filtering here to expose a sub-set of the available variables
+		return sphSolver.getWatchableVariables();
 	}
-
 }
