@@ -39,13 +39,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
-import org.geppetto.core.common.IVariable;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.state.StateTreeRoot;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
 import org.geppetto.core.solver.ISolver;
+import org.geppetto.core.pojo.model.VariableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,13 +75,13 @@ public class SPHSimulatorService extends ASimulator {
 	}
 	
 	@Override
-	public List<IVariable> getForceableVariables() {
+	public VariableList getForceableVariables() {
 		// the simulator could do some filtering here to expose a sub-set of the available variables
 		return sphSolver.getForceableVariables();
 	}
 
 	@Override
-	public List<IVariable> getWatchableVariables() {
+	public VariableList getWatchableVariables() {
 		// the simulator could do some filtering here to expose a sub-set of the available variables
 		return sphSolver.getWatchableVariables();
 	}
