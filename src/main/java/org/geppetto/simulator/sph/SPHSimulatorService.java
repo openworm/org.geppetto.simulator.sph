@@ -45,16 +45,20 @@ import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
 import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
+@Scope("prototype")
 public class SPHSimulatorService extends ASimulator {
 
 	private static Log logger = LogFactory.getLog(SPHSimulatorService.class);
 	
 	@Autowired
 	private ISolver sphSolver;
-
+	
+	@Autowired
+	private SimulatorConfig simulatorConfig;
 
 	@Override
 	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
