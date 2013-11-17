@@ -87,4 +87,9 @@ public class SPHSimulatorService extends ASimulator {
 		// the simulator could do some filtering here to expose a sub-set of the available variables
 		return sphSolver.getWatchableVariables();
 	}
+
+	@Override
+	public int getCapacity() {
+		return simulatorConfig.getSimulatorCapacity();
+	}
 }
