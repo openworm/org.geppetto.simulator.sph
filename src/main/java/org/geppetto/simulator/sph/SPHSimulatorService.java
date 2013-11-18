@@ -92,4 +92,9 @@ public class SPHSimulatorService extends ASimulator {
 	public int getCapacity() {
 		return simulatorConfig.getSimulatorCapacity();
 	}
+
+	@Override
+	public String getName() {
+		return simulatorConfig.getSimulatorName();
+	}
 }
