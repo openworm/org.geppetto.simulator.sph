@@ -33,6 +33,8 @@
 
 package org.geppetto.simulator.sph;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.common.GeppettoExecutionException;
@@ -82,5 +84,29 @@ public class SPHSimulatorService extends ASimulator {
 	public VariableList getWatchableVariables() {
 		// the simulator could do some filtering here to expose a sub-set of the available variables
 		return sphSolver.getWatchableVariables();
+	}
+
+	@Override
+	public void addWatchVariables(List<String> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearWatchVariables() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startWatch() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopWatch() {
+		// TODO Auto-generated method stub
+		
 	}
 }
