@@ -33,13 +33,10 @@
 
 package org.geppetto.simulator.sph;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
-import org.geppetto.core.data.model.VariableList;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.state.StateTreeRoot;
 import org.geppetto.core.simulation.IRunConfiguration;
@@ -49,20 +46,24 @@ import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author matteocantarelli
+ *
+ */
 @Service
-public class SPHSimulatorService extends ASimulator {
+public class SPHSimulatorService extends ASimulator
+{
 
-	private static Log logger = LogFactory.getLog(SPHSimulatorService.class);
-	
+	private static Log _logger = LogFactory.getLog(SPHSimulatorService.class);
+
 	@Autowired
 	private ISolver sphSolver;
-
 
 	@Override
 	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
 	{
-		logger.info("SPH Simulate method invoked");
-		StateTreeRoot results=sphSolver.solve(runConfiguration);
+		_logger.info("SPH Simulate method invoked");
+		StateTreeRoot results = sphSolver.solve(runConfiguration);
 		getListener().stateTreeUpdated(results);
 	}
 
@@ -70,43 +71,28 @@ public class SPHSimulatorService extends ASimulator {
 	public void initialize(IModel model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
 		super.initialize(model, listener);
-		StateTreeRoot stateTree = sphSolver.initialize(model);	
-		getListener().stateTreeUpdated(stateTree);
+		_stateTree = sphSolver.initialize(model);
+		setWatchableVariables();
+		setForceableVariables();
+		getListener().stateTreeUpdated(_stateTree);
 	}
-	
-	@Override
-	public VariableList getForceableVariables() {
+
+	/**
+	 * 
+	 */
+	public void setForceableVariables()
+	{
 		// the simulator could do some filtering here to expose a sub-set of the available variables
-		return sphSolver.getForceableVariables();
+		getForceableVariables().setVariables(sphSolver.getForceableVariables().getVariables());
 	}
 
-	@Override
-	public VariableList getWatchableVariables() {
+	/**
+	 * 
+	 */
+	public void setWatchableVariables()
+	{
 		// the simulator could do some filtering here to expose a sub-set of the available variables
-		return sphSolver.getWatchableVariables();
+		getWatchableVariables().setVariables(sphSolver.getWatchableVariables().getVariables());
 	}
 
-	@Override
-	public void addWatchVariables(List<String> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void clearWatchVariables() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void startWatch() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void stopWatch() {
-		// TODO Auto-generated method stub
-		
-	}
 }
