@@ -33,12 +33,21 @@
 
 package org.geppetto.simulator.sph;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.data.model.AVariable;
 import org.geppetto.core.model.IModel;
+import org.geppetto.core.model.state.AStateNode;
+import org.geppetto.core.model.state.CompositeStateNode;
+import org.geppetto.core.model.state.SimpleStateNode;
 import org.geppetto.core.model.state.StateTreeRoot;
+import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
+import org.geppetto.core.model.values.AValue;
+import org.geppetto.core.model.values.ValuesFactory;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -64,6 +73,7 @@ public class SPHSimulatorService extends ASimulator
 	{
 		_logger.info("SPH Simulate method invoked");
 		StateTreeRoot results = sphSolver.solve(runConfiguration);
+		
 		getListener().stateTreeUpdated(results);
 	}
 
@@ -94,5 +104,32 @@ public class SPHSimulatorService extends ASimulator
 		// the simulator could do some filtering here to expose a sub-set of the available variables
 		getWatchableVariables().setVariables(sphSolver.getWatchableVariables().getVariables());
 	}
-
+	
+	@Override
+	public void addWatchVariables(List<String> variableNames)
+	{
+		super.addWatchVariables(variableNames);
+		sphSolver.addWatchVariables(variableNames);
+	}
+	
+	@Override
+	public void clearWatchVariables()
+	{
+		super.clearWatchVariables();
+		sphSolver.clearWatchVariables();
+	}
+	
+	@Override
+	public void startWatch()
+	{
+		super.startWatch();
+		sphSolver.startWatch();
+	}
+	
+	@Override
+	public void stopWatch()
+	{
+		super.stopWatch();
+		sphSolver.stopWatch();
+	}
 }
