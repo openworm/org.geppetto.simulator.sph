@@ -33,13 +33,21 @@
 
 package org.geppetto.simulator.sph;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
-import org.geppetto.core.data.model.VariableList;
+import org.geppetto.core.data.model.AVariable;
 import org.geppetto.core.model.IModel;
+import org.geppetto.core.model.state.AStateNode;
+import org.geppetto.core.model.state.CompositeStateNode;
+import org.geppetto.core.model.state.SimpleStateNode;
 import org.geppetto.core.model.state.StateTreeRoot;
+import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
+import org.geppetto.core.model.values.AValue;
+import org.geppetto.core.model.values.ValuesFactory;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -47,20 +55,25 @@ import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author matteocantarelli
+ *
+ */
 @Service
-public class SPHSimulatorService extends ASimulator {
+public class SPHSimulatorService extends ASimulator
+{
 
-	private static Log logger = LogFactory.getLog(SPHSimulatorService.class);
-	
+	private static Log _logger = LogFactory.getLog(SPHSimulatorService.class);
+
 	@Autowired
 	private ISolver sphSolver;
-
 
 	@Override
 	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
 	{
-		logger.info("SPH Simulate method invoked");
-		StateTreeRoot results=sphSolver.solve(runConfiguration);
+		_logger.info("SPH Simulate method invoked");
+		StateTreeRoot results = sphSolver.solve(runConfiguration);
+		
 		getListener().stateTreeUpdated(results);
 	}
 
@@ -68,19 +81,55 @@ public class SPHSimulatorService extends ASimulator {
 	public void initialize(IModel model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
 		super.initialize(model, listener);
-		StateTreeRoot stateTree = sphSolver.initialize(model);	
-		getListener().stateTreeUpdated(stateTree);
+		_stateTree = sphSolver.initialize(model);
+		setWatchableVariables();
+		setForceableVariables();
+		getListener().stateTreeUpdated(_stateTree);
+	}
+
+	/**
+	 * 
+	 */
+	public void setForceableVariables()
+	{
+		// the simulator could do some filtering here to expose a sub-set of the available variables
+		getForceableVariables().setVariables(sphSolver.getForceableVariables().getVariables());
+	}
+
+	/**
+	 * 
+	 */
+	public void setWatchableVariables()
+	{
+		// the simulator could do some filtering here to expose a sub-set of the available variables
+		getWatchableVariables().setVariables(sphSolver.getWatchableVariables().getVariables());
 	}
 	
 	@Override
-	public VariableList getForceableVariables() {
-		// the simulator could do some filtering here to expose a sub-set of the available variables
-		return sphSolver.getForceableVariables();
+	public void addWatchVariables(List<String> variableNames)
+	{
+		super.addWatchVariables(variableNames);
+		sphSolver.addWatchVariables(variableNames);
 	}
-
+	
 	@Override
-	public VariableList getWatchableVariables() {
-		// the simulator could do some filtering here to expose a sub-set of the available variables
-		return sphSolver.getWatchableVariables();
+	public void clearWatchVariables()
+	{
+		super.clearWatchVariables();
+		sphSolver.clearWatchVariables();
+	}
+	
+	@Override
+	public void startWatch()
+	{
+		super.startWatch();
+		sphSolver.startWatch();
+	}
+	
+	@Override
+	public void stopWatch()
+	{
+		super.stopWatch();
+		sphSolver.stopWatch();
 	}
 }
