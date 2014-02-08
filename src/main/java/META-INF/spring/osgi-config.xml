@@ -16,7 +16,7 @@
 			<entry key="discoverableID" value="sphSimulator" />
 		</osgi:service-properties>
 	</osgi:service>
-	<bean id="SPHSimulatorService" scope=session class="org.geppetto.simulator.sph.SPHSimulatorService">
+	<bean id="SPHSimulatorService" scope="session" class="org.geppetto.simulator.sph.SPHSimulatorService">
 	<aop:scoped-proxy proxy-target-class="false"/>
 	</bean>
 	<osgi:reference bean-name="SPHSolverService" id="SPHSolver" interface="org.geppetto.core.solver.ISolver"/>
