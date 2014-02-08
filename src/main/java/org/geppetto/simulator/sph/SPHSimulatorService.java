@@ -55,17 +55,21 @@ import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 /**
  * @author matteocantarelli
  *
  */
 @Service
-@Scope("prototype")
 public class SPHSimulatorService extends ASimulator {
 
 	private static Log _logger = LogFactory.getLog(SPHSimulatorService.class);
 
+	public SPHSimulatorService(){
+		_logger.warn("new simulator service");
+	}
+	
 	@Autowired
 	private ISolver sphSolver;
 	
