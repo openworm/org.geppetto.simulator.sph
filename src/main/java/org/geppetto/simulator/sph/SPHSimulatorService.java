@@ -37,25 +37,17 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
-import org.geppetto.core.data.model.AVariable;
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.state.AStateNode;
-import org.geppetto.core.model.state.CompositeStateNode;
-import org.geppetto.core.model.state.SimpleStateNode;
 import org.geppetto.core.model.state.StateTreeRoot;
-import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
-import org.geppetto.core.model.values.AValue;
-import org.geppetto.core.model.values.ValuesFactory;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
 import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.context.annotation.ScopedProxyMode;
 
 /**
  * @author matteocantarelli
@@ -67,7 +59,7 @@ public class SPHSimulatorService extends ASimulator {
 	private static Log _logger = LogFactory.getLog(SPHSimulatorService.class);
 
 	public SPHSimulatorService(){
-		_logger.warn("new simulator service");
+		_logger.info("New SPH Simulator service created");
 	}
 	
 	@Autowired
@@ -140,11 +132,6 @@ public class SPHSimulatorService extends ASimulator {
 	{
 		super.stopWatch();
 		sphSolver.stopWatch();
-	}
-
-	@Override
-	public int getCapacity() {
-		return simulatorConfig.getSimulatorCapacity();
 	}
 
 	@Override
