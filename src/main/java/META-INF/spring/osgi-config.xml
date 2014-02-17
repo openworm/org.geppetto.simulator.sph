@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:osgi="http://www.springframework.org/schema/osgi"	
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
 							http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 							http://www.springframework.org/schema/osgi
-							http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd">
+							http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
+							http://www.springframework.org/schema/aop 
+       						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 	<!-- Exports the service implementation to other bundles by its service interface -->
-	<osgi:service id="SPHSimulatorExporter" ref="SPHSimulatorService" interface="org.geppetto.core.simulator.ISimulator">
+	<osgi:service id="SPHSimulatorExporter" ref="sphSimulatorService" interface="org.geppetto.core.simulator.ISimulator">
 		<osgi:service-properties>
 			<entry key="discoverableID" value="sphSimulator" />
 		</osgi:service-properties>
 	</osgi:service>
+	<bean id="sphSimulatorService" scope="thread" class="org.geppetto.simulator.sph.SPHSimulatorService">
+	<aop:scoped-proxy proxy-target-class="false"/>
+	</bean>
 	<osgi:reference bean-name="SPHSolverService" id="SPHSolver" interface="org.geppetto.core.solver.ISolver"/>
 </beans>
