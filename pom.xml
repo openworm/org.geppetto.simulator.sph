@@ -6,7 +6,7 @@
 	<artifactId>simulator.sph</artifactId>
 	<name>Geppetto SPH Simulator Bundle</name>
 	<packaging>bundle</packaging>
-	<version>0.0.9</version>
+	<version>0.1.0</version>
 	<properties>
 		<spring.version>3.0.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,13 +48,19 @@
 		<dependency>
 			<groupId>org.geppetto</groupId>
 			<artifactId>core</artifactId>
-			<version>0.0.9</version>
+			<version>0.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.0</version>
 		</dependency>
+		<dependency>
+	<groupId>cglib</groupId>
+	<artifactId>cglib</artifactId>
+	<version>2.2.2</version>
+</dependency>
+            
 	</dependencies>
 	<repositories>
 		<repository>
@@ -107,6 +113,9 @@
 						<Include-Resource>
 							{maven-resources},META-INF/spring=src/main/java/META-INF/spring
 						</Include-Resource>
+						<Import-Package>
+							org.aopalliance.aop,org.springframework.aop,,org.springframework.aop.scope,org.springframework.aop.framework,*
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
