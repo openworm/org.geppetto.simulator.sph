@@ -79,10 +79,11 @@ public class SPHSimulatorService extends ASimulator {
 	}
 
 	@Override
-	public void initialize(IModel model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
+	public void initialize(List<IModel> model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
 		super.initialize(model, listener);
-		_stateTree = sphSolver.initialize(model);
+		//TODO Refactor simulators to deal with more than one model!
+		_stateTree = sphSolver.initialize(model.get(0));
 		setWatchableVariables();
 		setForceableVariables();
 		getListener().stateTreeUpdated(_stateTree);
