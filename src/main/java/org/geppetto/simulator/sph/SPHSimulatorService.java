@@ -74,7 +74,7 @@ public class SPHSimulatorService extends ASimulator {
 	{
 		_logger.info("SPH Simulate method invoked");
 		StateTreeRoot results = sphSolver.solve(runConfiguration);
-		
+		advanceTimeStep(0.0001); //TODO Fix me, what's the correct timestep? how to calculate it?
 		getListener().stateTreeUpdated(results);
 	}
 
@@ -84,6 +84,8 @@ public class SPHSimulatorService extends ASimulator {
 		super.initialize(model, listener);
 		//TODO Refactor simulators to deal with more than one model!
 		_stateTree = sphSolver.initialize(model.get(0));
+		setTimeStepUnit("s");
+		advanceTimeStep(0);
 		setWatchableVariables();
 		setForceableVariables();
 		getListener().stateTreeUpdated(_stateTree);
