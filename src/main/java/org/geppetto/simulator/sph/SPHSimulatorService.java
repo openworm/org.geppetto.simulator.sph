@@ -74,15 +74,18 @@ public class SPHSimulatorService extends ASimulator {
 	{
 		_logger.info("SPH Simulate method invoked");
 		StateTreeRoot results = sphSolver.solve(runConfiguration);
-		
+		advanceTimeStep(0.0001); //TODO Fix me, what's the correct timestep? how to calculate it?
 		getListener().stateTreeUpdated(results);
 	}
 
 	@Override
-	public void initialize(IModel model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
+	public void initialize(List<IModel> model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
 		super.initialize(model, listener);
-		_stateTree = sphSolver.initialize(model);
+		//TODO Refactor simulators to deal with more than one model!
+		_stateTree = sphSolver.initialize(model.get(0));
+		setTimeStepUnit("s");
+		advanceTimeStep(0);
 		setWatchableVariables();
 		setForceableVariables();
 		getListener().stateTreeUpdated(_stateTree);
