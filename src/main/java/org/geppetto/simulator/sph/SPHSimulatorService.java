@@ -41,7 +41,7 @@ import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.state.StateTreeRoot;
+import org.geppetto.core.model.state.AspectTreeNode;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -73,7 +73,7 @@ public class SPHSimulatorService extends ASimulator {
 	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
 	{
 		_logger.info("SPH Simulate method invoked");
-		StateTreeRoot results = sphSolver.solve(runConfiguration);
+		AspectTreeNode results = sphSolver.solve(runConfiguration);
 		advanceTimeStep(0.000005); //TODO Fix me, what's the correct timestep? how to calculate it?
 		getListener().stateTreeUpdated(results);
 	}
