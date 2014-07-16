@@ -41,7 +41,10 @@ import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.model.IModel;
+import org.geppetto.core.model.ModelInterpreterException;
+import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
+import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -89,6 +92,17 @@ public class SPHSimulatorService extends ASimulator {
 		setWatchableVariables();
 		setForceableVariables();
 		getListener().stateTreeUpdated(_stateTree);
+	}
+	
+
+	@Override
+	public boolean populateVisualTree(AspectNode aspectNode) throws ModelInterpreterException {
+		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
+		
+		PopulateVisualTreeVisitor createSceneVisitor=new PopulateVisualTreeVisitor(visualizationTree,_stateTree);
+		visualizationTree.apply(createSceneVisitor);
+		
+		return true;
 	}
 
 	/**
