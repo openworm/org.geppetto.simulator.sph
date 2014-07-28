@@ -73,35 +73,43 @@ public class SPHSimulatorService extends ASimulator {
 
 
 	@Override
-	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
+	public void simulate(IRunConfiguration runConfiguration, AspectNode aspect) throws GeppettoExecutionException
 	{
 		_logger.info("SPH Simulate method invoked");
-		AspectSubTreeNode results = sphSolver.solve(runConfiguration);
+		sphSolver.solve(runConfiguration,aspect);
 		advanceTimeStep(0.000005); //TODO Fix me, what's the correct timestep? how to calculate it?
-		getListener().stateTreeUpdated(results);
+		getListener().stateTreeUpdated(aspect);
 	}
 
 	@Override
 	public void initialize(List<IModel> model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
 		super.initialize(model, listener);
-		//TODO Refactor simulators to deal with more than one model!
-		_stateTree = sphSolver.initialize(model.get(0));
+//		//TODO Refactor simulators to deal with more than one model!
+		sphSolver.initialize(model.get(0));
 		setTimeStepUnit("s");
 		advanceTimeStep(0);
 		setWatchableVariables();
 		setForceableVariables();
-		getListener().stateTreeUpdated(_stateTree);
 	}
 	
 
 	@Override
-	public boolean populateVisualTree(AspectNode aspectNode) throws ModelInterpreterException {
+	public boolean populateVisualTree(AspectNode aspectNode) throws ModelInterpreterException, GeppettoExecutionException {
 		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
 		
-		PopulateVisualTreeVisitor createSceneVisitor=new PopulateVisualTreeVisitor(visualizationTree,_stateTree);
-		visualizationTree.apply(createSceneVisitor);
+		//Ask the solver to populate the visual tree
+		try
+		{
+			sphSolver.populateVisualTree(aspectNode.getModel(),visualizationTree);
+		}
+		catch(GeppettoInitializationException e)
+		{
+			throw new ModelInterpreterException(e);
+		}
 		
+		getListener().stateTreeUpdated(aspectNode);
+
 		return true;
 	}
 
@@ -154,5 +162,12 @@ public class SPHSimulatorService extends ASimulator {
 	@Override
 	public String getName() {
 		return simulatorConfig.getSimulatorName();
+	}
+
+	@Override
+	public String getId()
+	{
+		// TODO Auto-generated method stub
+		return simulatorConfig.getSimulatorID();
 	}
 }
