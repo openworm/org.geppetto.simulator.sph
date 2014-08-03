@@ -78,7 +78,7 @@ public class SPHSimulatorService extends ASimulator {
 		_logger.info("SPH Simulate method invoked");
 		sphSolver.solve(runConfiguration,aspect);
 		advanceTimeStep(0.000005); //TODO Fix me, what's the correct timestep? how to calculate it?
-		getListener().stateTreeUpdated(aspect);
+		getListener().stateTreeUpdated();
 	}
 
 	@Override
@@ -91,6 +91,7 @@ public class SPHSimulatorService extends ASimulator {
 		advanceTimeStep(0);
 		setWatchableVariables();
 		setForceableVariables();
+		getListener().stateTreeUpdated();
 	}
 	
 
@@ -108,7 +109,7 @@ public class SPHSimulatorService extends ASimulator {
 			throw new ModelInterpreterException(e);
 		}
 		
-		getListener().stateTreeUpdated(aspectNode);
+		getListener().stateTreeUpdated();
 
 		return true;
 	}
