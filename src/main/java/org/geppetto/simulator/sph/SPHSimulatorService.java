@@ -41,7 +41,10 @@ import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.state.StateTreeRoot;
+import org.geppetto.core.model.ModelInterpreterException;
+import org.geppetto.core.model.runtime.AspectNode;
+import org.geppetto.core.model.runtime.AspectSubTreeNode;
+import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -70,25 +73,45 @@ public class SPHSimulatorService extends ASimulator {
 
 
 	@Override
-	public void simulate(IRunConfiguration runConfiguration) throws GeppettoExecutionException
+	public void simulate(IRunConfiguration runConfiguration, AspectNode aspect) throws GeppettoExecutionException
 	{
 		_logger.info("SPH Simulate method invoked");
-		StateTreeRoot results = sphSolver.solve(runConfiguration);
+		sphSolver.solve(runConfiguration,aspect);
 		advanceTimeStep(0.000005); //TODO Fix me, what's the correct timestep? how to calculate it?
-		getListener().stateTreeUpdated(results);
+		getListener().stateTreeUpdated();
 	}
 
 	@Override
 	public void initialize(List<IModel> model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
 		super.initialize(model, listener);
-		//TODO Refactor simulators to deal with more than one model!
-		_stateTree = sphSolver.initialize(model.get(0));
+//		//TODO Refactor simulators to deal with more than one model!
+		sphSolver.initialize(model.get(0));
 		setTimeStepUnit("s");
 		advanceTimeStep(0);
 		setWatchableVariables();
 		setForceableVariables();
-		getListener().stateTreeUpdated(_stateTree);
+		getListener().stateTreeUpdated();
+	}
+	
+
+	@Override
+	public boolean populateVisualTree(AspectNode aspectNode) throws ModelInterpreterException, GeppettoExecutionException {
+		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
+		
+		//Ask the solver to populate the visual tree
+		try
+		{
+			sphSolver.populateVisualTree(aspectNode.getModel(),visualizationTree);
+		}
+		catch(GeppettoInitializationException e)
+		{
+			throw new ModelInterpreterException(e);
+		}
+		
+		getListener().stateTreeUpdated();
+
+		return true;
 	}
 
 	/**
@@ -140,5 +163,12 @@ public class SPHSimulatorService extends ASimulator {
 	@Override
 	public String getName() {
 		return simulatorConfig.getSimulatorName();
+	}
+
+	@Override
+	public String getId()
+	{
+		// TODO Auto-generated method stub
+		return simulatorConfig.getSimulatorID();
 	}
 }

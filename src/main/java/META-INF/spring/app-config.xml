@@ -14,5 +14,6 @@
 	<!-- Add flag for Simulation Run Mode --> 
 	<bean id="simulatorConfig" class="org.geppetto.core.beans.SimulatorConfig"> 
 		<property name="simulatorName" value="SPHSimulator" />
+		<property name="simulatorID" value="sphSimulator" />
 	</bean>
 </beans>
