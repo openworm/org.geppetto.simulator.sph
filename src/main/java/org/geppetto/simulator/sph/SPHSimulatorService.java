@@ -103,6 +103,7 @@ public class SPHSimulatorService extends ASimulator {
 		try
 		{
 			sphSolver.populateVisualTree(aspectNode.getModel(),visualizationTree);
+			visualizationTree.setModified(true);
 		}
 		catch(GeppettoInitializationException e)
 		{
