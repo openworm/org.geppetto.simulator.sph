@@ -45,6 +45,7 @@ import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
+import org.geppetto.core.model.runtime.EntityNode;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -54,38 +55,39 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author matteocantarelli
- *
+ * 
  */
 @Service
 public class SPHSimulatorService extends ASimulator {
 
 	private static Log _logger = LogFactory.getLog(SPHSimulatorService.class);
 
-	public SPHSimulatorService(){
+	public SPHSimulatorService() {
 		_logger.info("New SPH Simulator service created");
 	}
-	
+
 	@Autowired
 	private ISolver sphSolver;
-	
+
 	@Autowired
 	private SimulatorConfig simulatorConfig;
 
-
 	@Override
-	public void simulate(IRunConfiguration runConfiguration, AspectNode aspect) throws GeppettoExecutionException
-	{
+	public void simulate(IRunConfiguration runConfiguration, AspectNode aspect)
+			throws GeppettoExecutionException {
 		_logger.info("SPH Simulate method invoked");
-		sphSolver.solve(runConfiguration,aspect);
-		advanceTimeStep(0.000005); //TODO Fix me, what's the correct timestep? how to calculate it?
+		sphSolver.solve(runConfiguration, aspect);
+		advanceTimeStep(0.000005); // TODO Fix me, what's the correct timestep?
+									// how to calculate it?
 		getListener().stateTreeUpdated();
 	}
 
 	@Override
-	public void initialize(List<IModel> model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
-	{
+	public void initialize(List<IModel> model,
+			ISimulatorCallbackListener listener)
+			throws GeppettoInitializationException, GeppettoExecutionException {
 		super.initialize(model, listener);
-//		//TODO Refactor simulators to deal with more than one model!
+		// //TODO Refactor simulators to deal with more than one model!
 		sphSolver.initialize(model.get(0));
 		setTimeStepUnit("s");
 		advanceTimeStep(0);
@@ -93,23 +95,25 @@ public class SPHSimulatorService extends ASimulator {
 		setForceableVariables();
 		getListener().stateTreeUpdated();
 	}
-	
 
 	@Override
-	public boolean populateVisualTree(AspectNode aspectNode) throws ModelInterpreterException, GeppettoExecutionException {
-		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
-		
-		//Ask the solver to populate the visual tree
-		try
-		{
-			sphSolver.populateVisualTree(aspectNode.getModel(),visualizationTree);
+	public boolean populateVisualTree(AspectNode aspectNode)
+			throws ModelInterpreterException, GeppettoExecutionException {
+		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode
+				.getSubTree(AspectTreeType.VISUALIZATION_TREE);
+
+		// Ask the solver to populate the visual tree
+		try {
+			sphSolver.populateVisualTree(aspectNode.getModel(),
+					visualizationTree);
 			visualizationTree.setModified(true);
-		}
-		catch(GeppettoInitializationException e)
-		{
+			aspectNode.setModified(true);
+			((EntityNode) aspectNode.getParentEntity())
+					.updateParentEntitiesFlags(true);
+		} catch (GeppettoInitializationException e) {
 			throw new ModelInterpreterException(e);
 		}
-		
+
 		getListener().stateTreeUpdated();
 
 		return true;
@@ -118,45 +122,43 @@ public class SPHSimulatorService extends ASimulator {
 	/**
 	 * 
 	 */
-	public void setForceableVariables()
-	{
-		// the simulator could do some filtering here to expose a sub-set of the available variables
-		getForceableVariables().setVariables(sphSolver.getForceableVariables().getVariables());
+	public void setForceableVariables() {
+		// the simulator could do some filtering here to expose a sub-set of the
+		// available variables
+		getForceableVariables().setVariables(
+				sphSolver.getForceableVariables().getVariables());
 	}
 
 	/**
 	 * 
 	 */
-	public void setWatchableVariables()
-	{
-		// the simulator could do some filtering here to expose a sub-set of the available variables
-		getWatchableVariables().setVariables(sphSolver.getWatchableVariables().getVariables());
+	public void setWatchableVariables() {
+		// the simulator could do some filtering here to expose a sub-set of the
+		// available variables
+		getWatchableVariables().setVariables(
+				sphSolver.getWatchableVariables().getVariables());
 	}
-	
+
 	@Override
-	public void addWatchVariables(List<String> variableNames)
-	{
+	public void addWatchVariables(List<String> variableNames) {
 		super.addWatchVariables(variableNames);
 		sphSolver.addWatchVariables(variableNames);
 	}
-	
+
 	@Override
-	public void clearWatchVariables()
-	{
+	public void clearWatchVariables() {
 		super.clearWatchVariables();
 		sphSolver.clearWatchVariables();
 	}
-	
+
 	@Override
-	public void startWatch()
-	{
+	public void startWatch() {
 		super.startWatch();
 		sphSolver.startWatch();
 	}
-	
+
 	@Override
-	public void stopWatch()
-	{
+	public void stopWatch() {
 		super.stopWatch();
 		sphSolver.stopWatch();
 	}
@@ -167,8 +169,7 @@ public class SPHSimulatorService extends ASimulator {
 	}
 
 	@Override
-	public String getId()
-	{
+	public String getId() {
 		// TODO Auto-generated method stub
 		return simulatorConfig.getSimulatorID();
 	}
