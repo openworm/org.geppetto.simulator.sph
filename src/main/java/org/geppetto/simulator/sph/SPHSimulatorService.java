@@ -77,7 +77,7 @@ public class SPHSimulatorService extends ASimulator {
 			throws GeppettoExecutionException {
 		_logger.info("SPH Simulate method invoked");
 		sphSolver.solve(runConfiguration, aspect);
-		advanceTimeStep(0.000005); // TODO Fix me, what's the correct timestep?
+		advanceTimeStep(0.000005, aspect); // TODO Fix me, what's the correct timestep?
 									// how to calculate it?
 		getListener().stateTreeUpdated();
 	}
@@ -90,7 +90,6 @@ public class SPHSimulatorService extends ASimulator {
 		// //TODO Refactor simulators to deal with more than one model!
 		sphSolver.initialize(model.get(0));
 		setTimeStepUnit("s");
-		advanceTimeStep(0);
 		setWatchableVariables();
 		setForceableVariables();
 		getListener().stateTreeUpdated();
