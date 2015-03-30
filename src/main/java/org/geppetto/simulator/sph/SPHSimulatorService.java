@@ -172,4 +172,10 @@ public class SPHSimulatorService extends ASimulator {
 		// TODO Auto-generated method stub
 		return simulatorConfig.getSimulatorID();
 	}
+
+	@Override
+	public void registerGeppettoService() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }
