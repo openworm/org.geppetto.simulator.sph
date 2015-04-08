@@ -41,6 +41,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.features.IDynamicVisualTreeFeature;
 import org.geppetto.core.features.IVariableWatchFeature;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.runtime.AspectNode;
@@ -78,6 +79,7 @@ public class SPHSimulatorService extends ASimulator {
 			throws GeppettoExecutionException {
 		_logger.info("SPH Simulate method invoked");
 		sphSolver.solve(runConfiguration, aspect);
+		((IDynamicVisualTreeFeature)this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspect);
 		advanceTimeStep(0.000005, aspect); // TODO Fix me, what's the correct timestep?
 									// how to calculate it?
 		getListener().stateTreeUpdated();
@@ -92,6 +94,7 @@ public class SPHSimulatorService extends ASimulator {
 		sphSolver.initialize(model.get(0));
 		setTimeStepUnit("s");
 		this.addFeature(new SPHVariableWatchFeature(sphSolver));
+		this.addFeature(new UpdateVisualizationTreeFeature(sphSolver));
 		((IVariableWatchFeature) this.getFeature(GeppettoFeature.VARIALE_WATCH_FEATURE)).getWatcheableVariables().setVariables(
 				sphSolver.getWatchableVariables().getVariables());
 		setForceableVariables();
