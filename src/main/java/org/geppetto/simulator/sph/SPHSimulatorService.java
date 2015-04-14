@@ -51,6 +51,7 @@ import org.geppetto.core.services.registry.ServicesRegistry;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
+import org.geppetto.core.simulator.AVariableWatchFeature;
 import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,7 +97,7 @@ public class SPHSimulatorService extends ASimulator {
 		this.addFeature(new SPHVariableWatchFeature(sphSolver));
 		this.addFeature(new UpdateVisualizationTreeFeature(sphSolver));
 		((IVariableWatchFeature) this.getFeature(GeppettoFeature.VARIALE_WATCH_FEATURE)).getWatcheableVariables().setVariables(
-				sphSolver.getWatchableVariables().getVariables());
+				((IVariableWatchFeature)this.getFeature(GeppettoFeature.VARIALE_WATCH_FEATURE)).getWatcheableVariables().getVariables());
 		setForceableVariables();
 		getListener().stateTreeUpdated();
 	}

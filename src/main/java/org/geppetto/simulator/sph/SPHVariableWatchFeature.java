@@ -51,25 +51,7 @@ public class SPHVariableWatchFeature extends AVariableWatchFeature{
 
 	@Override
 	public void addWatchVariables(List<String> variableNames) {
-		super.addWatchVariables(variableNames);
 		_sphSolver.addWatchVariables(variableNames);
-	}
-
-	@Override
-	public void clearWatchVariables() {
-		super.clearWatchVariables();
-		_sphSolver.clearWatchVariables();
-	}
-
-	@Override
-	public void startWatch() {
-		super.startWatch();
-		_sphSolver.startWatch();
-	}
-
-	@Override
-	public void stopWatch() {
-		super.stopWatch();
-		_sphSolver.stopWatch();
+		super.setWatchListModified(true);
 	}
 }
