@@ -96,8 +96,8 @@ public class SPHSimulatorService extends ASimulator {
 		setTimeStepUnit("s");
 		this.addFeature(new SPHVariableWatchFeature(sphSolver));
 		this.addFeature(new UpdateVisualizationTreeFeature(sphSolver));
-		((IVariableWatchFeature) this.getFeature(GeppettoFeature.VARIALE_WATCH_FEATURE)).getWatcheableVariables().setVariables(
-				((IVariableWatchFeature)this.getFeature(GeppettoFeature.VARIALE_WATCH_FEATURE)).getWatcheableVariables().getVariables());
+		((IVariableWatchFeature) this.getFeature(GeppettoFeature.VARIABLE_WATCH_FEATURE)).getWatcheableVariables().setVariables(
+				((IVariableWatchFeature)this.getFeature(GeppettoFeature.VARIABLE_WATCH_FEATURE)).getWatcheableVariables().getVariables());
 		setForceableVariables();
 		getListener().stateTreeUpdated();
 	}
