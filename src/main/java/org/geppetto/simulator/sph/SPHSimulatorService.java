@@ -42,7 +42,6 @@ import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.features.IDynamicVisualTreeFeature;
-import org.geppetto.core.features.IVariableWatchFeature;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.services.GeppettoFeature;
@@ -51,7 +50,6 @@ import org.geppetto.core.services.registry.ServicesRegistry;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
-import org.geppetto.core.simulator.AVariableWatchFeature;
 import org.geppetto.core.solver.ISolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,20 +94,8 @@ public class SPHSimulatorService extends ASimulator {
 		setTimeStepUnit("s");
 		this.addFeature(new SPHVariableWatchFeature(sphSolver));
 		this.addFeature(new UpdateVisualizationTreeFeature(sphSolver));
-		((IVariableWatchFeature) this.getFeature(GeppettoFeature.VARIABLE_WATCH_FEATURE)).getWatcheableVariables().setVariables(
-				((IVariableWatchFeature)this.getFeature(GeppettoFeature.VARIABLE_WATCH_FEATURE)).getWatcheableVariables().getVariables());
-		setForceableVariables();
-		getListener().stateTreeUpdated();
-	}
 
-	/**
-	 * 
-	 */
-	public void setForceableVariables() {
-		// the simulator could do some filtering here to expose a sub-set of the
-		// available variables
-		getForceableVariables().setVariables(
-				sphSolver.getForceableVariables().getVariables());
+		getListener().stateTreeUpdated();
 	}
 
 	@Override
