@@ -31,7 +31,6 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
 package org.geppetto.simulator.sph;
-import java.util.List;
 
 import org.geppetto.core.simulator.AVariableWatchFeature;
 import org.geppetto.core.solver.ISolver;
@@ -49,9 +48,4 @@ public class SPHVariableWatchFeature extends AVariableWatchFeature{
 		this._sphSolver = solver;
 	}
 
-	@Override
-	public void addWatchVariables(List<String> variableNames) {
-		_sphSolver.addWatchVariables(variableNames);
-		super.setWatchListModified(true);
-	}
 }
