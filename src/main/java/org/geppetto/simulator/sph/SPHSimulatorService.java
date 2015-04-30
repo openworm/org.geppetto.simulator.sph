@@ -33,6 +33,7 @@
 
 package org.geppetto.simulator.sph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -40,12 +41,12 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.features.IDynamicVisualTreeFeature;
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.runtime.AspectNode;
-import org.geppetto.core.model.runtime.AspectSubTreeNode;
-import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
-import org.geppetto.core.model.runtime.EntityNode;
+import org.geppetto.core.services.GeppettoFeature;
+import org.geppetto.core.services.IModelFormat;
+import org.geppetto.core.services.registry.ServicesRegistry;
 import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
@@ -77,6 +78,7 @@ public class SPHSimulatorService extends ASimulator {
 			throws GeppettoExecutionException {
 		_logger.info("SPH Simulate method invoked");
 		sphSolver.solve(runConfiguration, aspect);
+		((IDynamicVisualTreeFeature)this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspect);
 		advanceTimeStep(0.000005, aspect); // TODO Fix me, what's the correct timestep?
 									// how to calculate it?
 		getListener().stateTreeUpdated();
@@ -90,76 +92,10 @@ public class SPHSimulatorService extends ASimulator {
 		// //TODO Refactor simulators to deal with more than one model!
 		sphSolver.initialize(model.get(0));
 		setTimeStepUnit("s");
-		setWatchableVariables();
-		setForceableVariables();
-		getListener().stateTreeUpdated();
-	}
-
-	@Override
-	public boolean populateVisualTree(AspectNode aspectNode)
-			throws ModelInterpreterException, GeppettoExecutionException {
-		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode
-				.getSubTree(AspectTreeType.VISUALIZATION_TREE);
-
-		// Ask the solver to populate the visual tree
-		try {
-			sphSolver.populateVisualTree(aspectNode.getModel(),
-					visualizationTree);
-			visualizationTree.setModified(true);
-			aspectNode.setModified(true);
-			((EntityNode) aspectNode.getParentEntity())
-					.updateParentEntitiesFlags(true);
-		} catch (GeppettoInitializationException e) {
-			throw new ModelInterpreterException(e);
-		}
+		this.addFeature(new SPHVariableWatchFeature(sphSolver));
+		this.addFeature(new UpdateVisualizationTreeFeature(sphSolver));
 
 		getListener().stateTreeUpdated();
-
-		return true;
-	}
-
-	/**
-	 * 
-	 */
-	public void setForceableVariables() {
-		// the simulator could do some filtering here to expose a sub-set of the
-		// available variables
-		getForceableVariables().setVariables(
-				sphSolver.getForceableVariables().getVariables());
-	}
-
-	/**
-	 * 
-	 */
-	public void setWatchableVariables() {
-		// the simulator could do some filtering here to expose a sub-set of the
-		// available variables
-		getWatchableVariables().setVariables(
-				sphSolver.getWatchableVariables().getVariables());
-	}
-
-	@Override
-	public void addWatchVariables(List<String> variableNames) {
-		super.addWatchVariables(variableNames);
-		sphSolver.addWatchVariables(variableNames);
-	}
-
-	@Override
-	public void clearWatchVariables() {
-		super.clearWatchVariables();
-		sphSolver.clearWatchVariables();
-	}
-
-	@Override
-	public void startWatch() {
-		super.startWatch();
-		sphSolver.startWatch();
-	}
-
-	@Override
-	public void stopWatch() {
-		super.stopWatch();
-		sphSolver.stopWatch();
 	}
 
 	@Override
@@ -171,5 +107,12 @@ public class SPHSimulatorService extends ASimulator {
 	public String getId() {
 		// TODO Auto-generated method stub
 		return simulatorConfig.getSimulatorID();
+	}
+
+	@Override
+	public void registerGeppettoService() throws Exception {
+		List<IModelFormat> modelFormatList = new ArrayList<IModelFormat>();
+		modelFormatList.add(ModelFormat.SPH);
+		ServicesRegistry.registerSimulatorService(this, modelFormatList);
 	}
 }
