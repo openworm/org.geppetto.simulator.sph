@@ -41,13 +41,13 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
-import org.geppetto.core.data.model.IAspectConfiguration;
 import org.geppetto.core.features.IDynamicVisualTreeFeature;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.services.GeppettoFeature;
 import org.geppetto.core.services.IModelFormat;
 import org.geppetto.core.services.registry.ServicesRegistry;
+import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
 import org.geppetto.core.solver.ISolver;
@@ -59,13 +59,11 @@ import org.springframework.stereotype.Service;
  * 
  */
 @Service
-public class SPHSimulatorService extends ASimulator
-{
+public class SPHSimulatorService extends ASimulator {
 
 	private static Log _logger = LogFactory.getLog(SPHSimulatorService.class);
 
-	public SPHSimulatorService()
-	{
+	public SPHSimulatorService() {
 		_logger.info("New SPH Simulator service created");
 	}
 
@@ -76,19 +74,20 @@ public class SPHSimulatorService extends ASimulator
 	private SimulatorConfig simulatorConfig;
 
 	@Override
-	public void simulate(IAspectConfiguration aspectConfiguration, AspectNode aspect) throws GeppettoExecutionException
-	{
+	public void simulate(IRunConfiguration runConfiguration, AspectNode aspect)
+			throws GeppettoExecutionException {
 		_logger.info("SPH Simulate method invoked");
-		sphSolver.solve(aspectConfiguration, aspect);
-		((IDynamicVisualTreeFeature) this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspect);
+		sphSolver.solve(runConfiguration, aspect);
+		((IDynamicVisualTreeFeature)this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspect);
 		advanceTimeStep(0.000005, aspect); // TODO Fix me, what's the correct timestep?
-		// how to calculate it?
+									// how to calculate it?
 		getListener().stateTreeUpdated();
 	}
 
 	@Override
-	public void initialize(List<IModel> model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
-	{
+	public void initialize(List<IModel> model,
+			ISimulatorCallbackListener listener)
+			throws GeppettoInitializationException, GeppettoExecutionException {
 		super.initialize(model, listener);
 		// //TODO Refactor simulators to deal with more than one model!
 		sphSolver.initialize(model.get(0));
@@ -100,21 +99,18 @@ public class SPHSimulatorService extends ASimulator
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return simulatorConfig.getSimulatorName();
 	}
 
 	@Override
-	public String getId()
-	{
+	public String getId() {
 		// TODO Auto-generated method stub
 		return simulatorConfig.getSimulatorID();
 	}
 
 	@Override
-	public void registerGeppettoService() throws Exception
-	{
+	public void registerGeppettoService() throws Exception {
 		List<IModelFormat> modelFormatList = new ArrayList<IModelFormat>();
 		modelFormatList.add(ModelFormat.SPH);
 		ServicesRegistry.registerSimulatorService(this, modelFormatList);
