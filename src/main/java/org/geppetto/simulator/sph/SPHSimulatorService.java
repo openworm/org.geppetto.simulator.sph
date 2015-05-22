@@ -83,20 +83,23 @@ public class SPHSimulatorService extends ASimulator
 		((IDynamicVisualTreeFeature) this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspect);
 		advanceTimeStep(0.000005, aspect); // TODO Fix me, what's the correct timestep?
 		// how to calculate it?
-		getListener().stateTreeUpdated();
+		getListener().stepped(aspect);
 	}
 
 	@Override
-	public void initialize(List<IModel> model, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
+	public void initialize(List<IModel> models, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
-		super.initialize(model, listener);
+		super.initialize(models, listener);
 		// //TODO Refactor simulators to deal with more than one model!
-		sphSolver.initialize(model.get(0));
+		if(models.size() > 1)
+		{
+			throw new GeppettoInitializationException("More than one model in the SPH simulator is currently not supported");
+		}
+		sphSolver.initialize(models.get(0));
 		setTimeStepUnit("s");
 		this.addFeature(new SPHVariableWatchFeature(sphSolver));
 		this.addFeature(new UpdateVisualizationTreeFeature(sphSolver));
 
-		getListener().stateTreeUpdated();
 	}
 
 	@Override
