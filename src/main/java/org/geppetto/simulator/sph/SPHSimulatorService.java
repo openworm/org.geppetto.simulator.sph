@@ -77,14 +77,14 @@ public class SPHSimulatorService extends ASimulator
 	private SimulatorConfig simulatorConfig;
 
 	@Override
-	public void simulate(IAspectConfiguration aspectConfiguration, AspectNode aspect) throws GeppettoExecutionException
+	public void simulate(IAspectConfiguration aspectConfiguration, AspectNode aspectNode) throws GeppettoExecutionException
 	{
 		_logger.info("SPH Simulate method invoked");
-		sphSolver.solve(aspectConfiguration, aspect);
-		((IDynamicVisualTreeFeature) this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspect);
-		advanceTimeStep(0.000005, aspect); // TODO Fix me, what's the correct timestep?
+		sphSolver.solve(aspectConfiguration, aspectNode);
+		((IDynamicVisualTreeFeature) this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspectNode);
+		advanceTimeStep(0.000005, aspectNode); // TODO Fix me, what's the correct timestep?
 		// how to calculate it?
-		getListener().stepped(aspect);
+		getListener().stepped(aspectNode);
 	}
 
 	@Override
@@ -122,4 +122,5 @@ public class SPHSimulatorService extends ASimulator
 		List<ModelFormat> modelFormats = new ArrayList<ModelFormat>(Arrays.asList(ServicesRegistry.registerModelFormat("SPH")));
 		ServicesRegistry.registerSimulatorService(this, modelFormats);
 	}
+
 }
