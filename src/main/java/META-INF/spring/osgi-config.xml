@@ -11,12 +11,9 @@
        						http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
 	<!-- Exports the service implementation to other bundles by its service interface -->
-	<osgi:service id="SPHSimulatorExporter" ref="sphSimulatorService" interface="org.geppetto.core.simulator.ISimulator">
-		<osgi:service-properties>
-			<entry key="discoverableID" value="sphSimulator" />
-		</osgi:service-properties>
+	<osgi:service id="SPHSimulatorExporter" ref="sibernetic" interface="org.geppetto.core.simulator.ISimulator">
 	</osgi:service>
-	<bean id="sphSimulatorService" scope="thread" class="org.geppetto.simulator.sph.SPHSimulatorService">
+	<bean id="sibernetic" scope="prototype" class="org.geppetto.simulator.sph.SPHSimulatorService">
 	<aop:scoped-proxy proxy-target-class="false"/>
 	</bean>
 	<osgi:reference bean-name="SPHSolverService" id="SPHSolver" interface="org.geppetto.core.solver.ISolver"/>
