@@ -34,6 +34,7 @@
 package org.geppetto.simulator.sph;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -41,13 +42,13 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.data.model.IAspectConfiguration;
 import org.geppetto.core.features.IDynamicVisualTreeFeature;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.services.GeppettoFeature;
-import org.geppetto.core.services.IModelFormat;
+import org.geppetto.core.services.ModelFormat;
 import org.geppetto.core.services.registry.ServicesRegistry;
-import org.geppetto.core.simulation.IRunConfiguration;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.ASimulator;
 import org.geppetto.core.solver.ISolver;
@@ -59,11 +60,13 @@ import org.springframework.stereotype.Service;
  * 
  */
 @Service
-public class SPHSimulatorService extends ASimulator {
+public class SPHSimulatorService extends ASimulator
+{
 
 	private static Log _logger = LogFactory.getLog(SPHSimulatorService.class);
 
-	public SPHSimulatorService() {
+	public SPHSimulatorService()
+	{
 		_logger.info("New SPH Simulator service created");
 	}
 
@@ -74,45 +77,50 @@ public class SPHSimulatorService extends ASimulator {
 	private SimulatorConfig simulatorConfig;
 
 	@Override
-	public void simulate(IRunConfiguration runConfiguration, AspectNode aspect)
-			throws GeppettoExecutionException {
+	public void simulate(IAspectConfiguration aspectConfiguration, AspectNode aspectNode) throws GeppettoExecutionException
+	{
 		_logger.info("SPH Simulate method invoked");
-		sphSolver.solve(runConfiguration, aspect);
-		((IDynamicVisualTreeFeature)this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspect);
-		advanceTimeStep(0.000005, aspect); // TODO Fix me, what's the correct timestep?
-									// how to calculate it?
-		getListener().stateTreeUpdated();
+		sphSolver.solve(aspectConfiguration, aspectNode);
+		((IDynamicVisualTreeFeature) this.getFeature(GeppettoFeature.DYNAMIC_VISUALTREE_FEATURE)).updateVisualTree(aspectNode);
+		advanceTimeStep(0.000005, aspectNode); // TODO Fix me, what's the correct timestep?
+		// how to calculate it?
+		getListener().stepped(aspectNode);
 	}
 
 	@Override
-	public void initialize(List<IModel> model,
-			ISimulatorCallbackListener listener)
-			throws GeppettoInitializationException, GeppettoExecutionException {
-		super.initialize(model, listener);
+	public void initialize(List<IModel> models, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
+	{
+		super.initialize(models, listener);
 		// //TODO Refactor simulators to deal with more than one model!
-		sphSolver.initialize(model.get(0));
+		if(models.size() > 1)
+		{
+			throw new GeppettoInitializationException("More than one model in the SPH simulator is currently not supported");
+		}
+		sphSolver.initialize(models.get(0));
 		setTimeStepUnit("s");
 		this.addFeature(new SPHVariableWatchFeature(sphSolver));
 		this.addFeature(new UpdateVisualizationTreeFeature(sphSolver));
 
-		getListener().stateTreeUpdated();
 	}
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return simulatorConfig.getSimulatorName();
 	}
 
 	@Override
-	public String getId() {
+	public String getId()
+	{
 		// TODO Auto-generated method stub
 		return simulatorConfig.getSimulatorID();
 	}
 
 	@Override
-	public void registerGeppettoService() throws Exception {
-		List<IModelFormat> modelFormatList = new ArrayList<IModelFormat>();
-		modelFormatList.add(ModelFormat.SPH);
-		ServicesRegistry.registerSimulatorService(this, modelFormatList);
+	public void registerGeppettoService() throws Exception
+	{
+		List<ModelFormat> modelFormats = new ArrayList<ModelFormat>(Arrays.asList(ServicesRegistry.registerModelFormat("SPH")));
+		ServicesRegistry.registerSimulatorService(this, modelFormats);
 	}
+
 }
