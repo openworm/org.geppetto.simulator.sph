@@ -54,6 +54,13 @@ public class SiberneticWrapperService extends AExternalProcessSimulator {
 
 	protected File filePath = null;
 	
+	private String gResultFolder = "gResult";
+	
+	private String gResultFileName = "gResult"; // I think generation of file name should be dynamic
+												// For different instance for example take Id of service or make static member 
+												// and add it in the end of file name
+	private String siberneticModelConfig = "";
+	
 	private static Log logger = LogFactory.getLog(SiberneticWrapperService.class);
 	
 	@Autowired
@@ -64,7 +71,36 @@ public class SiberneticWrapperService extends AExternalProcessSimulator {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/**
+	 * Creates command to be executed by an external process
+	 * 
+	 * @param originalFileName
+	 * @param aspect
+	 */
+	public void createCommands(String originalFileName)
+	{
+		filePath = new File(originalFileName);
 
+		logger.info("Creating command to run " + originalFileName);
+		directoryToExecuteFrom = filePath.getParentFile().getAbsolutePath(); // In this case all needed files like opencl program should be near
+		outputFolder = directoryToExecuteFrom + gResultFolder;
+
+		if(false/*Utilities.isWindows()*/) //I need Utilities class but it in other bundle
+		{
+			//commands = new String[] { getSimulatorPath() + "mkdir.exe " + gResultFolder,  + ".exe" + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
+		}
+		else
+		{
+			//commands = new String[] { getSimulatorPath() + "mkdir " + gResultFolder, getSimulatorPath() + filePath.getAbsolutePath() + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
+		}
+
+		logger.info("Command to Execute: " + commands + " ...");
+		logger.info("From directory : " + directoryToExecuteFrom);
+
+	}
+
+	
 	@Override
 	public String getId() {
 		// TODO Auto-generated method stub
