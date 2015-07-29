@@ -63,6 +63,8 @@ public class SiberneticWrapperService extends AExternalProcessSimulator {
 	
 	private static Log logger = LogFactory.getLog(SiberneticWrapperService.class);
 	
+	 private static String OS = System.getProperty("os.name").toLowerCase();
+	
 	@Autowired
 	private SimulatorConfig siberneticSimulatorConfig;
 
@@ -71,12 +73,13 @@ public class SiberneticWrapperService extends AExternalProcessSimulator {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+	private boolean isWindows() {
+        return (OS.indexOf("win") >= 0);
+    }
 	/**
 	 * Creates command to be executed by an external process
 	 * 
 	 * @param originalFileName
-	 * @param aspect
 	 */
 	public void createCommands(String originalFileName)
 	{
@@ -86,20 +89,21 @@ public class SiberneticWrapperService extends AExternalProcessSimulator {
 		directoryToExecuteFrom = filePath.getParentFile().getAbsolutePath(); // In this case all needed files like opencl program should be near
 		outputFolder = directoryToExecuteFrom + gResultFolder;
 
-		if(false/*Utilities.isWindows()*/) //I need Utilities class but it in other bundle
+		if(isWindows())
 		{
-			//commands = new String[] { getSimulatorPath() + "mkdir.exe " + gResultFolder,  + ".exe" + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
+			//commands = new String[] { getSimulatorPath() + "mkdir.exe " + gResultFolder,  
+			//						getSimulatorPath() + ".exe" + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
 		}
 		else
 		{
-			//commands = new String[] { getSimulatorPath() + "mkdir " + gResultFolder, getSimulatorPath() + filePath.getAbsolutePath() + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
+			commands = new String[] { getSimulatorPath() + "mkdir " + gResultFolder,  
+										getSimulatorPath() + "/Release/Sibernetic" + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
 		}
 
 		logger.info("Command to Execute: " + commands + " ...");
 		logger.info("From directory : " + directoryToExecuteFrom);
 
 	}
-
 	
 	@Override
 	public String getId() {
