@@ -34,11 +34,23 @@
 package org.geppetto.simulator.sph;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.beans.SimulatorConfig;
+import org.geppetto.core.common.GeppettoExecutionException;
+import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.model.IModel;
+import org.geppetto.core.model.ModelWrapper;
+import org.geppetto.core.services.ModelFormat;
+import org.geppetto.core.services.registry.ServicesRegistry;
+import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.AExternalProcessSimulator;
+import org.geppetto.core.simulator.AVariableWatchFeature;
+import org.geppetto.core.simulator.ExternalSimulatorConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,32 +62,52 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class SiberneticWrapperService extends AExternalProcessSimulator {
+public class SiberneticWrapperService extends AExternalProcessSimulator
+{
 
 	protected File filePath = null;
-	
+
 	private String gResultFolder = "gResult";
-	
+
 	private String gResultFileName = "gResult"; // I think generation of file name should be dynamic
-												// For different instance for example take Id of service or make static member 
+												// For different instance for example take Id of service or make static member
 												// and add it in the end of file name
-	private String siberneticModelConfig = "";
-	
+
 	private static Log logger = LogFactory.getLog(SiberneticWrapperService.class);
-	
-	 private static String OS = System.getProperty("os.name").toLowerCase();
-	
+
+	private static String OS = System.getProperty("os.name").toLowerCase();
+
 	@Autowired
 	private SimulatorConfig siberneticSimulatorConfig;
+	
+	@Autowired
+	private ExternalSimulatorConfig siberneticExternalSimulatorConfig;
 
 	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+	public void initialize(List<IModel> models, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
+	{
+		super.initialize(models, listener);
+
+		this.addFeature(new AVariableWatchFeature());
+
+		/**
+		 * Creates command from model wrapper's neuron script
+		 */
+		if(models.size() > 1)
+		{
+			throw new GeppettoInitializationException("More than one model in the Sibernetic simulator is currently not supported");
+		}
+
+		ModelWrapper wrapper = (ModelWrapper) models.get(0);
+		this.originalFileName = wrapper.getModel(ServicesRegistry.registerModelFormat("SIBERNETIC")).toString();
+		this.createCommands(this.originalFileName);
 	}
-	private boolean isWindows() {
-        return (OS.indexOf("win") >= 0);
-    }
+
+	private boolean isWindows()
+	{
+		return (OS.indexOf("win") >= 0);
+	}
+
 	/**
 	 * Creates command to be executed by an external process
 	 * 
@@ -91,36 +123,47 @@ public class SiberneticWrapperService extends AExternalProcessSimulator {
 
 		if(isWindows())
 		{
-			//commands = new String[] { getSimulatorPath() + "mkdir.exe " + gResultFolder,  
-			//						getSimulatorPath() + ".exe" + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
+			// commands = new String[] { getSimulatorPath() + "mkdir.exe " + gResultFolder,
+			// getSimulatorPath() + ".exe" + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
 		}
 		else
 		{
-			commands = new String[] { getSimulatorPath() + "mkdir " + gResultFolder,  
-										getSimulatorPath() + "/Release/Sibernetic" + " -f " + siberneticModelConfig }; // without this " -f " + siberneticModelConfig it will run default demo1 rom configuration folder
+			commands = new String[] { getSimulatorPath() + "Sibernetic" + " -f " + originalFileName }; // without this " -f " +
+																																									// siberneticModelConfig it will run
+																																									// default demo1 rom configuration
+																																									// folder
 		}
 
 		logger.info("Command to Execute: " + commands + " ...");
 		logger.info("From directory : " + directoryToExecuteFrom);
 
 	}
+
+	@Override
+	public String getName()
+	{
+		return this.siberneticSimulatorConfig.getSimulatorName();
+	}
+
+	@Override
+	public String getId()
+	{
+		return this.siberneticSimulatorConfig.getSimulatorID();
+	}
+
+	@Override
+	public String getSimulatorPath()
+	{
+		return this.siberneticExternalSimulatorConfig.getSimulatorPath();
+	}
 	
 	@Override
-	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+	public void registerGeppettoService() throws Exception
+	{
+		List<ModelFormat> modelFormats = new ArrayList<ModelFormat>(Arrays.asList(ServicesRegistry.registerModelFormat("SIBERNETIC")));
+		ServicesRegistry.registerSimulatorService(this, modelFormats);
 	}
 
-	@Override
-	public void registerGeppettoService() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public String getSimulatorPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

@@ -11,9 +11,13 @@
 	<context:annotation-config/>	
 	<context:component-scan base-package="org.geppetto.simulator.sph" />
 		
-	<!-- Add flag for Simulation Run Mode --> 
-	<bean id="simulatorConfig" class="org.geppetto.core.beans.SimulatorConfig"> 
-		<property name="simulatorName" value="SPHSimulator" />
-		<property name="simulatorID" value="sphSimulator" />
+	
+	<bean id="siberneticSimulatorConfig" class="org.geppetto.core.beans.SimulatorConfig"> 
+		<property name="simulatorName" value="Sibernetic Simulator" />
+		<property name="simulatorID" value="sibernetic" />
+	</bean>
+	
+	<bean id="siberneticExternalSimulatorConfig" class="org.geppetto.core.simulator.ExternalSimulatorConfig"> 
+		<property name="simulatorPath" value="/Users/matteocantarelli/Documents/Development/sibernetic/Release/" />
 	</bean>
 </beans>
