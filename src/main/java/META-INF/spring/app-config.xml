@@ -18,6 +18,6 @@
 	</bean>
 	
 	<bean id="siberneticExternalSimulatorConfig" class="org.geppetto.core.simulator.ExternalSimulatorConfig"> 
-		<property name="simulatorPath" value="/Users/matteocantarelli/Documents/Development/sibernetic/Release/" />
+		<property name="simulatorPath" value="/home/serg/git/openworm/Smoothed-Particle-Hydrodynamics/" />
 	</bean>
 </beans>

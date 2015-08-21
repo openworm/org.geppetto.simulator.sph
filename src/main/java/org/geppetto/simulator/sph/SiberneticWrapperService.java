@@ -43,6 +43,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.data.model.IAspectConfiguration;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.ModelWrapper;
 import org.geppetto.core.services.ModelFormat;
@@ -72,7 +73,9 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 	private String gResultFileName = "gResult"; // I think generation of file name should be dynamic
 												// For different instance for example take Id of service or make static member
 												// and add it in the end of file name
-
+	
+	private float simulationLenght = 0;
+	
 	private static Log logger = LogFactory.getLog(SiberneticWrapperService.class);
 
 	private static String OS = System.getProperty("os.name").toLowerCase();
@@ -82,7 +85,7 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 	
 	@Autowired
 	private ExternalSimulatorConfig siberneticExternalSimulatorConfig;
-
+	
 	@Override
 	public void initialize(List<IModel> models, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
 	{
@@ -97,9 +100,9 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 		{
 			throw new GeppettoInitializationException("More than one model in the Sibernetic simulator is currently not supported");
 		}
-
+		/*MOdel file name*/
 		ModelWrapper wrapper = (ModelWrapper) models.get(0);
-		this.originalFileName = wrapper.getModel(ServicesRegistry.registerModelFormat("SIBERNETIC")).toString();
+		this.originalFileName = wrapper.getModel(ServicesRegistry.registerModelFormat("SIBERNETIC")).toString();//"/home/serg/git/openworm/geppetto/org.geppetto.simulator.sph/src/test/resources/demo1"
 		this.createCommands(this.originalFileName);
 	}
 
@@ -111,16 +114,14 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 	/**
 	 * Creates command to be executed by an external process
 	 * 
-	 * @param originalFileName
+	 * @param modelFileName
 	 */
-	public void createCommands(String originalFileName)
+	public void createCommands(String modelFileName)
 	{
-		filePath = new File(originalFileName);
-
-		logger.info("Creating command to run " + originalFileName);
-		directoryToExecuteFrom = filePath.getParentFile().getAbsolutePath(); // In this case all needed files like opencl program should be near
-		outputFolder = directoryToExecuteFrom + gResultFolder;
-
+		filePath = new File(modelFileName);
+		logger.info("Creating command to run " + modelFileName);
+		directoryToExecuteFrom = getSimulatorPath();//filePath.getParentFile().getAbsolutePath();
+		outputFolder = directoryToExecuteFrom + gResultFolder; 
 		if(isWindows())
 		{
 			// commands = new String[] { getSimulatorPath() + "mkdir.exe " + gResultFolder,
@@ -128,10 +129,9 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 		}
 		else
 		{
-			commands = new String[] { getSimulatorPath() + "Sibernetic" + " -f " + originalFileName }; // without this " -f " +
-																																									// siberneticModelConfig it will run
-																																									// default demo1 rom configuration
-																																									// folder
+			commands = new String[] { /*getSimulatorPath() + " mkdir " + gResultFolder,*/ 
+					getSimulatorPath() + "Release/Sibernetic" + " -f " + modelFileName +" timelimit=0.05" }; 
+		
 		}
 
 		logger.info("Command to Execute: " + commands + " ...");
@@ -163,7 +163,5 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 		List<ModelFormat> modelFormats = new ArrayList<ModelFormat>(Arrays.asList(ServicesRegistry.registerModelFormat("SIBERNETIC")));
 		ServicesRegistry.registerSimulatorService(this, modelFormats);
 	}
-
-
 
 }
