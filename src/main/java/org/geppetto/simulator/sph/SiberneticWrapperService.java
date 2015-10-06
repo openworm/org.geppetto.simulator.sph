@@ -129,7 +129,7 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 		}
 		else
 		{
-			commands = new String[] { /*getSimulatorPath() + " mkdir " + gResultFolder,*/ 
+			commands = new String[] { "mkdir gresult", 
 					getSimulatorPath() + "Release/Sibernetic" + " -f " + modelFileName +" timelimit=0.05" }; 
 		
 		}
@@ -163,5 +163,11 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 		List<ModelFormat> modelFormats = new ArrayList<ModelFormat>(Arrays.asList(ServicesRegistry.registerModelFormat("SIBERNETIC")));
 		ServicesRegistry.registerSimulatorService(this, modelFormats);
 	}
+	
+	@Override
+	public void processDone(String[] processCommand) throws GeppettoExecutionException
+	{
 
+	}
+	
 }
