@@ -85,13 +85,13 @@ public class SiberneticWrapperServiceTest implements ISimulatorCallbackListener
 		siberneticModel.wrapModel(new ModelFormat("SIBERNETIC"), "/home/serg/git/openworm/geppetto/org.geppetto.simulator.sph/src/test/resources/demo1");//"/home/serg/git/openworm/Smoothed-Particle-Hydrodynamics/Release/");
 		List<IModel> models=new ArrayList<IModel>();
 		models.add(siberneticModel);
-		sibernetic.initialize(models, this);
-		float timestep=0.00005f;
+		float timestep=0.000005f;
 		float length=0.05f;
 		LocalSimulatorConfiguration simulatorConfiguration=new LocalSimulatorConfiguration(0l, "sibernetic", "", timestep, length, null);
 		LocalInstancePath aspect=new LocalInstancePath(0l, "scene", "mechanical", "");
 		IAspectConfiguration config=new LocalAspectConfiguration(0l, aspect, null, null, simulatorConfiguration);
-		sibernetic.simulate(config, null);
+		sibernetic.initialize(models, this, config);
+		sibernetic.simulate(null);
 		Thread.sleep(2000);
 		
 	}

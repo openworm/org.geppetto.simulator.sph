@@ -87,9 +87,9 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 	private ExternalSimulatorConfig siberneticExternalSimulatorConfig;
 	
 	@Override
-	public void initialize(List<IModel> models, ISimulatorCallbackListener listener) throws GeppettoInitializationException, GeppettoExecutionException
+	public void initialize(List<IModel> models, ISimulatorCallbackListener listener, IAspectConfiguration aspectConfiguration) throws GeppettoInitializationException, GeppettoExecutionException
 	{
-		super.initialize(models, listener);
+		super.initialize(models, listener, aspectConfiguration);
 
 		this.addFeature(new AVariableWatchFeature());
 
@@ -103,7 +103,7 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 		/*MOdel file name*/
 		ModelWrapper wrapper = (ModelWrapper) models.get(0);
 		this.originalFileName = wrapper.getModel(ServicesRegistry.registerModelFormat("SIBERNETIC")).toString();//"/home/serg/git/openworm/geppetto/org.geppetto.simulator.sph/src/test/resources/demo1"
-		this.createCommands(this.originalFileName);
+		this.createCommands(this.originalFileName, aspectConfiguration);
 	}
 
 	private boolean isWindows()
@@ -116,7 +116,7 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 	 * 
 	 * @param modelFileName
 	 */
-	public void createCommands(String modelFileName)
+	public void createCommands(String modelFileName, IAspectConfiguration aspectConfiguration)
 	{
 		filePath = new File(modelFileName);
 		logger.info("Creating command to run " + modelFileName);
@@ -130,7 +130,9 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 		else
 		{
 			commands = new String[] { "mkdir gresult", 
-					getSimulatorPath() + "Release/Sibernetic" + " -f " + modelFileName +" timelimit=0.05" }; 
+					getSimulatorPath() + "Release/Sibernetic" + " -f " + modelFileName 
+					+ " timelimit=" + aspectConfiguration.getSimulatorConfiguration().getLength() 
+					+ " timestep=" + aspectConfiguration.getSimulatorConfiguration().getTimestep() + " gmode "}; 
 		
 		}
 
