@@ -132,7 +132,7 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 			commands = new String[] { "mkdir gresult", 
 					getSimulatorPath() + "Release/Sibernetic" + " -f " + modelFileName 
 					+ " timelimit=" + aspectConfiguration.getSimulatorConfiguration().getLength() 
-					+ " timestep=" + aspectConfiguration.getSimulatorConfiguration().getTimestep() + " gmode "}; 
+					+ " timestep=" + aspectConfiguration.getSimulatorConfiguration().getTimestep() + " -gmode "}; 
 		
 		}
 
