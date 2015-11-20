@@ -1,7 +1,7 @@
 package org.geppetto.simulator.sph;
 
 import org.geppetto.core.features.IDynamicVisualTreeFeature;
-import org.geppetto.core.model.runtime.AspectNode;
+import org.geppetto.core.model.typesystem.AspectNode;
 import org.geppetto.core.services.GeppettoFeature;
 import org.geppetto.core.solver.ISolver;
 
