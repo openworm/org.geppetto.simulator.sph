@@ -68,9 +68,9 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 
 	protected File filePath = null;
 
-	private String gResultFolder = "gResult";
+	private String gResultFolder = "gresult";
 
-	private String gResultFileName = "gResult"; // I think generation of file name should be dynamic
+	private String gResultFileName = "gresult"; // I think generation of file name should be dynamic
 												// For different instance for example take Id of service or make static member
 												// and add it in the end of file name
 	
@@ -132,7 +132,7 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 			commands = new String[] { "mkdir gresult", 
 					getSimulatorPath() + "Release/Sibernetic" + " -f " + modelFileName 
 					+ " timelimit=" + aspectConfiguration.getSimulatorConfiguration().getLength() 
-					+ " timestep=" + aspectConfiguration.getSimulatorConfiguration().getTimestep() + " -gmode "}; 
+					+ " timestep=" + aspectConfiguration.getSimulatorConfiguration().getTimestep() + " -gmode logstep=100"}; // option logstep is needed to indicate how often loging is needed by default it is 10
 		
 		}
 
