@@ -44,14 +44,14 @@ import org.geppetto.core.beans.SimulatorConfig;
 import org.geppetto.core.common.GeppettoExecutionException;
 import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.data.model.IAspectConfiguration;
-import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.ModelWrapper;
-import org.geppetto.core.services.ModelFormat;
+import org.geppetto.core.model.GeppettoModelAccess;
 import org.geppetto.core.services.registry.ServicesRegistry;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
 import org.geppetto.core.simulator.AExternalProcessSimulator;
-import org.geppetto.core.simulator.AVariableWatchFeature;
 import org.geppetto.core.simulator.ExternalSimulatorConfig;
+import org.geppetto.model.DomainModel;
+import org.geppetto.model.ExperimentState;
+import org.geppetto.model.ModelFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,22 +87,14 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 	private ExternalSimulatorConfig siberneticExternalSimulatorConfig;
 	
 	@Override
-	public void initialize(List<IModel> models, ISimulatorCallbackListener listener, IAspectConfiguration aspectConfiguration) throws GeppettoInitializationException, GeppettoExecutionException
+	public void initialize(DomainModel model, IAspectConfiguration aspectConfiguration, ExperimentState experimentState, ISimulatorCallbackListener listener, GeppettoModelAccess modelAccess) throws GeppettoInitializationException, GeppettoExecutionException
 	{
-		super.initialize(models, listener, aspectConfiguration);
+		super.initialize(model, aspectConfiguration, experimentState, listener, geppettoModelAccess);
 
-		this.addFeature(new AVariableWatchFeature());
 
-		/**
-		 * Creates command from model wrapper's neuron script
-		 */
-		if(models.size() > 1)
-		{
-			throw new GeppettoInitializationException("More than one model in the Sibernetic simulator is currently not supported");
-		}
 		/*MOdel file name*/
-		ModelWrapper wrapper = (ModelWrapper) models.get(0);
-		this.originalFileName = wrapper.getModel(ServicesRegistry.registerModelFormat("SIBERNETIC")).toString();//"/home/serg/git/openworm/geppetto/org.geppetto.simulator.sph/src/test/resources/demo1"
+
+		this.originalFileName = (String) model.getDomainModel();//"/home/serg/git/openworm/geppetto/org.geppetto.simulator.sph/src/test/resources/demo1"
 		this.createCommands(this.originalFileName, aspectConfiguration);
 	}
 

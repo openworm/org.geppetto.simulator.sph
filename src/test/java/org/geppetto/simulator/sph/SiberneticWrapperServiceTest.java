@@ -33,10 +33,7 @@
 package org.geppetto.simulator.sph;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
 import javax.annotation.Resource;
 
@@ -45,13 +42,10 @@ import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.data.model.IAspectConfiguration;
 import org.geppetto.core.data.model.ResultsFormat;
 import org.geppetto.core.data.model.local.LocalAspectConfiguration;
-import org.geppetto.core.data.model.local.LocalInstancePath;
 import org.geppetto.core.data.model.local.LocalSimulatorConfiguration;
-import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.ModelWrapper;
-import org.geppetto.core.model.runtime.AspectNode;
-import org.geppetto.core.services.ModelFormat;
 import org.geppetto.core.simulation.ISimulatorCallbackListener;
+import org.geppetto.model.DomainModel;
+import org.geppetto.model.GeppettoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,32 +75,25 @@ public class SiberneticWrapperServiceTest implements ISimulatorCallbackListener
 	@Test
 	public void testSibernetic() throws GeppettoInitializationException, GeppettoExecutionException, InterruptedException
 	{
-		ModelWrapper siberneticModel=new ModelWrapper(null);
-		siberneticModel.wrapModel(new ModelFormat("SIBERNETIC"), "/home/serg/Documents/git/openworm/geppetto/org.geppetto.simulator.sph/src/test/resources/demo1");//"/home/serg/git/openworm/Smoothed-Particle-Hydrodynamics/Release/");
-		List<IModel> models=new ArrayList<IModel>();
-		models.add(siberneticModel);
+		DomainModel siberneticModel=GeppettoFactory.eINSTANCE.createDomainModel();
+		siberneticModel.setDomainModel("/home/serg/Documents/git/openworm/geppetto/org.geppetto.simulator.sph/src/test/resources/demo1");//"/home/serg/git/openworm/Smoothed-Particle-Hydrodynamics/Release/");
 		float timestep=5.0e-06f;
 		float length=0.0001f;
 		LocalSimulatorConfiguration simulatorConfiguration=new LocalSimulatorConfiguration(0l, "sibernetic", "", timestep, length, null);
-		LocalInstancePath aspect=new LocalInstancePath(0l, "scene", "mechanical", "");
-		IAspectConfiguration config=new LocalAspectConfiguration(0l, aspect, null, null, simulatorConfiguration);
-		sibernetic.initialize(models, this, config);
-		sibernetic.simulate(null);
+
+		IAspectConfiguration config=new LocalAspectConfiguration(0l, "siberneticModel", null, null, simulatorConfiguration);
+		sibernetic.initialize(siberneticModel,config,null,this,null);
+		sibernetic.simulate();
 		Thread.sleep(2000);
 		
 	}
 
-	@Override
-	public void endOfSteps(AspectNode aspectNode, Map<File, ResultsFormat> results) throws GeppettoExecutionException
-	{
-		System.out.println("The simulation was over");
-		
-	}
+
 
 	@Override
-	public void stepped(AspectNode aspect) throws GeppettoExecutionException
+	public void endOfSteps(IAspectConfiguration arg0, Map<File, ResultsFormat> arg1) throws GeppettoExecutionException
 	{
-		
+		System.out.println("The simulation was over");
 	}
 
 }
