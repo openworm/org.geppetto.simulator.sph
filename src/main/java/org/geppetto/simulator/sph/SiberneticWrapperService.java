@@ -163,5 +163,12 @@ public class SiberneticWrapperService extends AExternalProcessSimulator
 	{
 
 	}
+
+	@Override
+	public void processFailed(String message, Exception e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
